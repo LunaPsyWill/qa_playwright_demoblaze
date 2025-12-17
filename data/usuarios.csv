@@ -1,0 +1,5 @@
+username,password,debe_pasar
+test_user_ok,12345,TRUE
+test_user_ok,,FALSE
+,,FALSE
+test_user_ok,wrong_password,FALSE
