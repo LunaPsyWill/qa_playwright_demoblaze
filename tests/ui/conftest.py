@@ -1,4 +1,7 @@
 import pytest
+import os
+from playwright.sync_api import sync_playwright
+import allure
 from utils.csv_reader import read_csv_users
 from pages.signup_page import SignupPage
 from pages.login_page import LoginPage
@@ -7,6 +10,33 @@ from pages.cart_page import CartPage
 from pages.order_modal_page import OrderModalPage
 from pages.confirm_purchase_page import ConfirmPurchasePage
 import random,string
+
+HEADLESS = True if os.getenv("CI") else False
+
+@pytest.fixture(scope="function")
+def page():
+	with sync_playwright() as p:
+		browser = p.chromium.launch(headless=HEADLESS,slow_mo=300)
+		context = browser.new_context()
+		page = context.new_page()
+		base_url = os.getenv("BASE_URL_UI")
+		page.goto(base_url)
+		yield page
+		context.close()
+		browser.close()
+
+@pytest.fixture(autouse=True)
+def allure_setup(page):
+	yield
+
+	if hasattr(page,"is_closed") and not page.is_closed():
+		try:
+			screenshot = page.screenshot()
+			allure.attach(screenshot,
+				"Screenshot final",
+				allure.attachment_type.PNG)
+		except:
+			pass
 
 @pytest.fixture
 def generar_usuario():

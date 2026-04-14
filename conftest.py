@@ -1,21 +1,17 @@
 import pytest
-import allure
 import os
-from playwright.sync_api import sync_playwright
+from dotenv import load_dotenv
 from utils.logger import get_test_logger
 
-HEADLESS = True if os.getenv("CI") else False
+load_dotenv()
 
-@pytest.fixture(scope="function")
-def page():
-	with sync_playwright() as p:
-		browser = p.chromium.launch(headless=HEADLESS,slow_mo=300)
-		context = browser.new_context()
-		page = context.new_page()
-		page.goto("https://www.demoblaze.com/")
-		yield page
-		context.close()
-		browser.close()
+# def pytest_addoption(parser):
+# 	parser.addoption(
+# 		"--env",
+# 		action="store",
+# 		default="dev",
+# 		help="Environment to tun tests against"
+# 		)
 
 @pytest.fixture
 def test_logger(request):
@@ -25,18 +21,6 @@ def test_logger(request):
 	yield logger
 	logger.info(f"===== FINALIZANDO TEST: {test_name} =====")
 
-@pytest.fixture(autouse=True)
-def allure_setup(page):
-	yield
-
-	if hasattr(page,"is_closed") and not page.is_closed():
-		try:
-			screenshot = page.screenshot()
-			allure.attach(screenshot,
-				"Screenshot final",
-				allure.attachment_type.PNG)
-		except:
-			pass
 
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item,call):
