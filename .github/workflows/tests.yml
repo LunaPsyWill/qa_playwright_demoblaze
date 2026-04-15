@@ -6,80 +6,106 @@ on:
   pull_request:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  # build:
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.14.0'
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v5
+  #       with:
+  #         python-version: '3.11'
 
-      - name: Install dependencies
-        run:  |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          playwright install chromium
+  #     - name: Install dependencies
+  #       run:  |
+  #         python -m pip install --upgrade pip
+  #         pip install -r requirements.txt
+  #         playwright install chromium
 
   api-tests:
     runs-on: ubuntu-latest
-    needs: build
     env: 
       FAKE_API: "https://fakeapi.com"
     steps:
-    - name: Run API Tests
-      run:  |
-        pytest tests/api --alluredir=allure-results
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run:  |
+          pip install -r requirements.txt
 
-    - name: Upload API report
-      uses: actions/upload-artifact@v4
-      with:
-        name: api-allure-results
-        path: allure-results
+      - name: Run API Tests
+        run:  |
+          pytest tests/api --alluredir=allure-results
+
+      - name: Upload API report
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-allure-results
+          path: allure-results
 
   ui-tests:
     runs-on: ubuntu-latest
-    needs: build
     env:
       BASE_URL_UI: https://www.demoblaze.com/
     steps:
-    - name: Run UI Tests
-      run:  |
-        pytest tests/ui --alluredir=allure-results
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run:  |
+          pip install -r requirements.txt
 
-    - name: Upload UI report
-      uses: actions/upload-artifact@v4
-      with:
-        name: ui-allure-results
-        path: allure-results
+      - name: Run UI Tests
+        run:  |
+          pytest tests/ui --alluredir=allure-results
+
+      - name: Upload UI report
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-allure-results
+          path: allure-results
 
   db-tests:
     runs-on: ubuntu-latest
     needs: build
     steps:
-    - name: Run DB mock Tests
-      run:  |
-        pytest tests/db --alluredir=allure-results
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run:  |
+          pip install -r requirements.txt
 
-    - name: Upload DB mock report
-      uses: actions/upload-artifact@v4
-      with:
-        name: db-allure-results
-        path: allure-results
+      - name: Run DB mock Tests
+        run:  |
+          pytest tests/db --alluredir=allure-results
+
+      - name: Upload DB mock report
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-allure-results
+          path: allure-results
 
   app-tests:
     runs-on: ubuntu-latest
     needs: build
     steps:
-    - name: Run App Tests
-      run:  |
-        pytest tests/app --alluredir=allure-results
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run:  |
+          pip install -r requirements.txt
+          
+      - name: Run App Tests
+        run:  |
+          pytest tests/app --alluredir=allure-results
 
-    - name: Upload APP report
-      uses: actions/upload-artifact@v4
-      with:
-        name: app-allure-results
-        path: allure-results
+      - name: Upload APP report
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-allure-results
+          path: allure-results
