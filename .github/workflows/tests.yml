@@ -28,9 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     env: 
-      BASE_URL: https://dummyjson.com
-      USERNAME: kminchelle
-      PASSWORD: 01e1p1R
+      FAKE_API: "https://fakeapi.com"
     steps:
     - name: Run API Tests
       run:  |
