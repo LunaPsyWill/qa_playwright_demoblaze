@@ -5,7 +5,7 @@ jsonschema==4.26.0
 playwright==1.56.0
 pydantic==2.12.5
 pytest==8.4.2
-pytest-requests-mock
+requests-mock
 python-dotenv==1.2.2
-requests==2.33.1
+Requests==2.33.1
 SQLAlchemy==2.0.49
