@@ -32,6 +32,7 @@ jobs:
     steps:
     - name: Run API Tests
       run:  |
+        pip install -r requirements.txt
         pytest tests/api --alluredir=allure-results
 
     - name: Upload API report
